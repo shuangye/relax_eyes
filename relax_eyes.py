@@ -14,8 +14,8 @@ import webbrowser
 from tkinter import *
 
 g_root                          = None
-g_workDuration                  = 30 * 60   # in seconds; changed as needed
-g_relaxDuration                 = 5 * 60    # in seconds; changed as needed
+g_workDuration                  = 30 * 60   # in seconds; change as needed
+g_relaxDuration                 = 5 * 60    # in seconds; change as needed
 gc_FONT                         = 'Helvetica'
 gc_DEFAULT_BG_COLOR             = '#DDDDDD'
 gc_DEFAULT_FG_COLOR             = 'black'
@@ -33,17 +33,20 @@ class Application(Frame):
         self.mode = gc_MODE_WORK
         self.countdownText = StringVar()
         self.pack(expand = True, fill = 'both')
+        self.place(in_ = master, anchor = CENTER, relx = .5, rely = .5)
         self.createWidgets()
         self.timeMeas()
 
     def createWidgets(self):
         self.statusLabel = Label(self, font = (gc_FONT, 60), pady = 20)
         self.statusLabel.pack()
-        self.countdownLabel = Label(self, font = (gc_FONT, 150), textvariable = self.countdownText, pady = 30)
+        self.countdownLabel = Label(self, font = (gc_FONT, 200), textvariable = self.countdownText, pady = 30)
         self.countdownLabel.pack()
-        self.actionButton = Button(self, font = (gc_FONT, 20), command = self.relax, borderwidth = 0, padx = 10, pady = 10)
+        self.bottomFrame = Frame(master = self.master)
+        self.bottomFrame.pack(expand = True, fill = X, anchor = S, side = BOTTOM)
+        self.actionButton = Button(self.bottomFrame, font = (gc_FONT, 20), command = self.relax, borderwidth = 0, padx = 10, pady = 10)
         self.actionButton.pack(side = RIGHT, anchor = SE)
-        self.copyLabel = Label(self, font = (gc_FONT, 10), text = '© 2020 <Harper Liu, ' + gc_REPO_URL, cursor="hand2")
+        self.copyLabel = Label(self.bottomFrame, font = (gc_FONT, 10), text = '© 2020 <Harper Liu, {0}>'.format(gc_REPO_URL), cursor="hand2")
         self.copyLabel.pack(side = LEFT, anchor = SW)
         self.copyLabel.bind("<Button-1>", lambda e: webbrowser.open_new(gc_REPO_URL))
         self.configureUI()
@@ -64,6 +67,7 @@ class Application(Frame):
         else: bgColor = gc_DEFAULT_BG_COLOR; fgColor = gc_DEFAULT_FG_COLOR; statusLebel = 'Time To Relax';
         g_root.configure(bg = bgColor)
         self.configure(bg = bgColor)
+        self.bottomFrame.configure(bg = bgColor)
         self.statusLabel.configure(bg = bgColor, fg = fgColor, text = statusLebel)
         self.countdownLabel.configure(bg = bgColor, fg = fgColor)
         self.copyLabel.configure(bg = bgColor, fg = fgColor)
@@ -95,6 +99,7 @@ def main():
     g_root = Tk()
     g_root.title('Relax Eyes')
     g_root.resizable(True, True)
+    g_root.geometry("{}x{}".format(g_root.winfo_screenwidth() // 2, g_root.winfo_screenheight() // 2))
     # g_root.state('zoomed')  # maximize
     g_root.configure(bg = gc_DEFAULT_BG_COLOR)
     app = Application(master = g_root)
