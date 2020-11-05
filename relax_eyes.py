@@ -3,7 +3,7 @@ This program reminds you to relax after working for a certain period.
 """
 
 """
-Copyright © 2020 <Harper Liu, https://github.com/shuangye/>
+Copyright © 2020 <Harper Liu, https://github.com/shuangye/relax_eyes>
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -22,7 +22,7 @@ gc_DEFAULT_FG_COLOR             = 'black'
 gc_RELAX_FG_COLOR               = gc_DEFAULT_BG_COLOR
 gc_RELAX_BG_COLOR               = gc_DEFAULT_FG_COLOR
 gc_TIMER_RESOLUTION             = 1         # in seconds
-gc_REPO_URL                     = 'https://github.com/shuangye/'
+gc_REPO_URL                     = 'https://github.com/shuangye/relax_eyes'
 gc_MODE_RELAX                   = 0
 gc_MODE_WORK                    = 1
 
@@ -32,7 +32,7 @@ class Application(Frame):
         self.lapsed = 0
         self.mode = gc_MODE_WORK
         self.countdownText = StringVar()
-        self.pack(expand=True, fill='both')
+        self.pack(expand = True, fill = 'both')
         self.createWidgets()
         self.timeMeas()
 
@@ -70,7 +70,7 @@ class Application(Frame):
         if self.mode == gc_MODE_RELAX:
             self.actionButton.configure(bg = bgColor, fg = fgColor, text = 'Work Now', command = self.work)
             toggleFullscreen(True)
-            g_root.lift()                           # https://stackoverflow.com/questions/1892339/how-to-make-a-tkinter-window-jump-to-the-front
+            g_root.lift()                           # Thank you https://stackoverflow.com/questions/1892339/how-to-make-a-tkinter-window-jump-to-the-front
             g_root.attributes('-topmost', True)
             g_root.attributes('-topmost', False)    # temporarily to the top most
         else:
@@ -101,4 +101,7 @@ def main():
     app.mainloop()
 
 if __name__ == "__main__":
+    if len(sys.argv) >= 3:  # specify duration in minutes
+        g_workDuration = int(sys.argv[1]) * 60
+        g_relaxDuration = int(sys.argv[2]) * 60
     main()
