@@ -26,9 +26,9 @@ Change the extension name of relax_eyes.py to ".pyw", and run.
 
 # Screenshots 运行截屏
 
-Work 工作时：
+Work; shows as a normal window 工作时，以普通窗口形式显示：
 ![Work 工作时](screenshots/Work.png "Work 工作时")
 
-Relax 休息时：
+Relax; shows in full screen 休息时，全屏显示：
 ![Relax 休息时](screenshots/Relax.png "Relax 休息时")
 

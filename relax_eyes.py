@@ -74,6 +74,9 @@ class Application(Frame):
         if self.mode == gc_MODE_RELAX:
             self.actionButton.configure(bg = bgColor, fg = fgColor, text = 'Work Now', command = self.work)
             toggleFullscreen(True)
+            g_root.update()
+            g_root.deiconify()
+            # g_root.state('normal')
             g_root.lift()                           # Thank you https://stackoverflow.com/questions/1892339/how-to-make-a-tkinter-window-jump-to-the-front
             g_root.attributes('-topmost', True)
             g_root.attributes('-topmost', False)    # temporarily to the top most
