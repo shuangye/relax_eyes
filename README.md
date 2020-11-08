@@ -8,21 +8,19 @@ This program reminds you to relax after working for a certain period.
 
 This is a standard Python3 script. It should run on mainstream platforms like Microsoft Windows, Apple macOS, and Linux distributions.
 
-Change the extension name of relax_eyes.py to ".pyw", and run.
+Ensure you have Python3 installed on your computer, and "relax_eyes.pyw".
 
 该程序是一个标准的 Python3 脚本，可运行在主流平台上，如微软 Windows、苹果 macOS、以及 Linux 发行版。
 
-把 relax_eyes.py 的后缀名改为 ".pyw"，直接运行即可。
+确保你的计算机已安装 Python3，直接运行 "relax_eyes.pyw" 即可。
 
 # To Do 待做
 
 - Support multiple screens.
 - Allow to force relaxing.
-- Remind before x seconds before relaxing.
 
 - 支持多显示器。
 - 允许强制休息。
-- 开始休息前 x 秒提示。
 
 # Screenshots 运行截屏
 

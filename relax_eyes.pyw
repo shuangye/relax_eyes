@@ -16,9 +16,11 @@ from tkinter import *
 g_root                          = None
 g_workDuration                  = 30 * 60   # in seconds; change as needed
 g_relaxDuration                 = 5 * 60    # in seconds; change as needed
+g_notifyDurationBeforeRelax     = 20        # in seconds; change as needed
 gc_FONT                         = 'Helvetica'
 gc_DEFAULT_BG_COLOR             = '#DDDDDD'
 gc_DEFAULT_FG_COLOR             = 'black'
+gc_NOTIFY_FG_COLOR              = 'orange'
 gc_RELAX_FG_COLOR               = gc_DEFAULT_BG_COLOR
 gc_RELAX_BG_COLOR               = gc_DEFAULT_FG_COLOR
 gc_TIMER_RESOLUTION             = 1         # in seconds
@@ -60,7 +62,18 @@ class Application(Frame):
         else:
             remaining = g_workDuration - self.lapsed
             if remaining == 0: self.relax()
+            elif remaining == g_notifyDurationBeforeRelax:
+                self.countdownLabel.configure(fg = gc_NOTIFY_FG_COLOR)
+                self.bringUpWindow(True)
         self.countdownText.set("{0:02}:{1:02}".format(remaining // 60, remaining % 60))
+
+    def bringUpWindow(self, temporary):
+        g_root.update()
+        g_root.deiconify()
+        # g_root.state('normal')                # may not work on non-Windows OS
+        g_root.lift()                           # Thank you https://stackoverflow.com/questions/1892339/how-to-make-a-tkinter-window-jump-to-the-front
+        g_root.attributes('-topmost', True)
+        if temporary: g_root.attributes('-topmost', False)
 
     def configureUI(self):
         if self.mode == gc_MODE_RELAX: bgColor = gc_RELAX_BG_COLOR; fgColor = gc_RELAX_FG_COLOR; statusLebel = 'Time To Work';
@@ -74,15 +87,11 @@ class Application(Frame):
         if self.mode == gc_MODE_RELAX:
             self.actionButton.configure(bg = bgColor, fg = fgColor, text = 'Work Now', command = self.work)
             toggleFullscreen(True)
-            g_root.update()
-            g_root.deiconify()
-            # g_root.state('normal')
-            g_root.lift()                           # Thank you https://stackoverflow.com/questions/1892339/how-to-make-a-tkinter-window-jump-to-the-front
-            g_root.attributes('-topmost', True)
-            g_root.attributes('-topmost', False)    # temporarily to the top most
+            self.bringUpWindow(False)
         else:
             self.actionButton.configure(bg = bgColor, fg = fgColor, text = 'Relax Now', command = self.relax)
             toggleFullscreen(False)
+            self.bringUpWindow(True)
 
     def work(self):
         self.mode = gc_MODE_WORK
