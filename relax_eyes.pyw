@@ -3,7 +3,7 @@ This program reminds you to relax after working for a certain period.
 """
 
 """
-Copyright © 2020 <Harper Liu, https://github.com/shuangye/relax_eyes>
+Copyright © 2020-2022 <Harper Liu, https://github.com/shuangye/relax_eyes>
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -11,6 +11,7 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
 import sys
 import webbrowser
+from datetime import datetime
 from tkinter import *
 
 g_root                          = None
@@ -34,6 +35,7 @@ class Application(Frame):
         self.lapsed = 0
         self.mode = gc_MODE_WORK
         self.countdownText = StringVar()
+        self.currentTime = StringVar()
         self.pack(expand = True, fill = 'both')
         self.place(in_ = master, anchor = CENTER, relx = .5, rely = .5)
         self.createWidgets()
@@ -44,6 +46,8 @@ class Application(Frame):
         self.statusLabel.pack()
         self.countdownLabel = Label(self, font = (gc_FONT, 200), textvariable = self.countdownText, pady = 30)
         self.countdownLabel.pack()
+        self.currentTimeLabel = Label(self, font = (gc_FONT, 70), textvariable = self.currentTime, pady = 30)
+        self.currentTimeLabel.pack()
         self.bottomFrame = Frame(master = self.master)
         self.bottomFrame.pack(expand = True, fill = X, anchor = S, side = BOTTOM)
         self.actionButton = Button(self.bottomFrame, font = (gc_FONT, 20), command = self.relax, borderwidth = 0, padx = 10, pady = 10)
@@ -66,6 +70,7 @@ class Application(Frame):
                 self.countdownLabel.configure(fg = gc_NOTIFY_FG_COLOR)
                 self.bringUpWindow(True)
         self.countdownText.set("{0:02}:{1:02}".format(remaining // 60, remaining % 60))
+        self.currentTime.set(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
 
     def bringUpWindow(self, temporary):
         g_root.update()
@@ -83,6 +88,7 @@ class Application(Frame):
         self.bottomFrame.configure(bg = bgColor)
         self.statusLabel.configure(bg = bgColor, fg = fgColor, text = statusLebel)
         self.countdownLabel.configure(bg = bgColor, fg = fgColor)
+        self.currentTimeLabel.configure(bg = bgColor, fg = fgColor)
         self.copyLabel.configure(bg = bgColor, fg = fgColor)
         if self.mode == gc_MODE_RELAX:
             self.actionButton.configure(bg = bgColor, fg = fgColor, text = 'Work Now', command = self.work)
@@ -111,7 +117,7 @@ def main():
     g_root = Tk()
     g_root.title('Relax Eyes')
     g_root.resizable(True, True)
-    g_root.geometry("{}x{}".format(g_root.winfo_screenwidth() // 2, g_root.winfo_screenheight() // 2))
+    g_root.geometry("{}x{}".format(g_root.winfo_screenwidth() // 3 * 2, g_root.winfo_screenheight() // 3 * 2))
     # g_root.state('zoomed')  # maximize
     g_root.configure(bg = gc_DEFAULT_BG_COLOR)
     app = Application(master = g_root)
