@@ -18,6 +18,7 @@ g_root                          = None
 g_workDuration                  = 30 * 60   # in seconds; change as needed
 g_relaxDuration                 = 5 * 60    # in seconds; change as needed
 g_notifyDurationBeforeRelax     = 20        # in seconds; change as needed
+g_minimizeDelay                 = 3         # in seconds; change as needed
 gc_FONT                         = 'Helvetica'
 gc_DEFAULT_BG_COLOR             = '#DDDDDD'
 gc_DEFAULT_FG_COLOR             = 'black'
@@ -52,7 +53,7 @@ class Application(Frame):
         self.bottomFrame.pack(expand = True, fill = X, anchor = S, side = BOTTOM)
         self.actionButton = Button(self.bottomFrame, font = (gc_FONT, 20), command = self.relax, borderwidth = 0, padx = 10, pady = 10)
         self.actionButton.pack(side = RIGHT, anchor = SE)
-        self.copyLabel = Label(self.bottomFrame, font = (gc_FONT, 10), text = '© 2020 <Harper Liu, {0}>'.format(gc_REPO_URL), cursor="hand2")
+        self.copyLabel = Label(self.bottomFrame, font = (gc_FONT, 10), text = '© 2020-2022 <Harper LIU, {0}>'.format(gc_REPO_URL), cursor="hand2")
         self.copyLabel.pack(side = LEFT, anchor = SW)
         self.copyLabel.bind("<Button-1>", lambda e: webbrowser.open_new(gc_REPO_URL))
         self.configureUI()
@@ -63,7 +64,10 @@ class Application(Frame):
         if (self.mode == gc_MODE_RELAX):
             remaining = g_relaxDuration - self.lapsed
             if remaining == 0: self.work()
-        else:
+        elif (self.mode == gc_MODE_WORK):
+            if self.lapsed == g_minimizeDelay:
+                #g_root.iconify()
+                g_root.wm_state('iconic')
             remaining = g_workDuration - self.lapsed
             if remaining == 0: self.relax()
             elif remaining == g_notifyDurationBeforeRelax:
@@ -77,8 +81,12 @@ class Application(Frame):
         g_root.deiconify()
         # g_root.state('normal')                # may not work on non-Windows OS
         g_root.lift()                           # Thank you https://stackoverflow.com/questions/1892339/how-to-make-a-tkinter-window-jump-to-the-front
+        g_root.focus_force()
         g_root.attributes('-topmost', True)
-        if temporary: g_root.attributes('-topmost', False)
+        if temporary:
+            g_root.update()
+            g_root.attributes('-topmost', False)
+            # self.after(3000, g_root.iconify())
 
     def configureUI(self):
         if self.mode == gc_MODE_RELAX: bgColor = gc_RELAX_BG_COLOR; fgColor = gc_RELAX_FG_COLOR; statusLebel = 'Time To Work';
