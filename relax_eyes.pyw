@@ -34,6 +34,7 @@ class Application(Frame):
     def __init__(self, master = None):
         Frame.__init__(self, master)
         self.lapsed = 0
+        self.remaining = 0
         self.mode = gc_MODE_WORK
         self.countdownText = StringVar()
         self.currentTime = StringVar()
@@ -51,7 +52,7 @@ class Application(Frame):
         self.currentTimeLabel.pack()
         self.bottomFrame = Frame(master = self.master)
         self.bottomFrame.pack(expand = True, fill = X, anchor = S, side = BOTTOM)
-        self.actionButton = Button(self.bottomFrame, font = (gc_FONT, 20), command = self.relax, borderwidth = 0, padx = 10, pady = 10)
+        self.actionButton = Button(self.bottomFrame, font = (gc_FONT, 20), command = lambda: self.switchMode(gc_MODE_RELAX), borderwidth = 0, padx = 10, pady = 10)
         self.actionButton.pack(side = RIGHT, anchor = SE)
         self.copyLabel = Label(self.bottomFrame, font = (gc_FONT, 10), text = '© 2020-2022 <Harper LIU, {0}>'.format(gc_REPO_URL), cursor="hand2")
         self.copyLabel.pack(side = LEFT, anchor = SW)
@@ -59,22 +60,21 @@ class Application(Frame):
         self.configureUI()
 
     def timeMeas(self):
-        self.after(gc_TIMER_RESOLUTION * 1000, self.timeMeas)
-        self.lapsed += gc_TIMER_RESOLUTION
         if (self.mode == gc_MODE_RELAX):
-            remaining = g_relaxDuration - self.lapsed
-            if remaining == 0: self.work()
+            self.remaining = g_relaxDuration - self.lapsed
+            if self.remaining == 0: self.switchMode(gc_MODE_WORK)
         elif (self.mode == gc_MODE_WORK):
             if self.lapsed == g_minimizeDelay:
                 #g_root.iconify()
                 g_root.wm_state('iconic')
-            remaining = g_workDuration - self.lapsed
-            if remaining == 0: self.relax()
-            elif remaining == g_notifyDurationBeforeRelax:
+            self.remaining = g_workDuration - self.lapsed
+            if self.remaining == 0: self.switchMode(gc_MODE_RELAX)
+            elif self.remaining == g_notifyDurationBeforeRelax:
                 self.countdownLabel.configure(fg = gc_NOTIFY_FG_COLOR)
                 self.bringUpWindow(True)
-        self.countdownText.set("{0:02}:{1:02}".format(remaining // 60, remaining % 60))
-        self.currentTime.set(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
+        self.updateUI()
+        self.lapsed += gc_TIMER_RESOLUTION
+        self.after(gc_TIMER_RESOLUTION * 1000, self.timeMeas)
 
     def bringUpWindow(self, temporary):
         g_root.update()
@@ -99,23 +99,24 @@ class Application(Frame):
         self.currentTimeLabel.configure(bg = bgColor, fg = fgColor)
         self.copyLabel.configure(bg = bgColor, fg = fgColor)
         if self.mode == gc_MODE_RELAX:
-            self.actionButton.configure(bg = bgColor, fg = fgColor, text = 'Work Now', command = self.work)
+            self.actionButton.configure(bg = bgColor, fg = fgColor, text = 'Work Now', command = lambda: self.switchMode(gc_MODE_WORK))
             toggleFullscreen(True)
             self.bringUpWindow(False)
         else:
-            self.actionButton.configure(bg = bgColor, fg = fgColor, text = 'Relax Now', command = self.relax)
+            self.actionButton.configure(bg = bgColor, fg = fgColor, text = 'Relax Now', command = lambda: self.switchMode(gc_MODE_RELAX))
             toggleFullscreen(False)
             self.bringUpWindow(True)
 
-    def work(self):
-        self.mode = gc_MODE_WORK
-        self.lapsed = 0
-        self.configureUI()
+    def updateUI(self):
+        self.countdownText.set("{0:02}:{1:02}".format(self.remaining // 60, self.remaining % 60))
+        self.currentTime.set(datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
 
-    def relax(self):
-        self.mode = gc_MODE_RELAX
+    def switchMode(self, mode):
+        self.mode = mode
+        self.remaining = g_workDuration if self.mode == gc_MODE_WORK else g_relaxDuration
         self.lapsed = 0
         self.configureUI()
+        self.updateUI()
 
 def toggleFullscreen(full):
     g_root.attributes('-fullscreen', full)
