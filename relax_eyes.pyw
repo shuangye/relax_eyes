@@ -17,8 +17,8 @@ from tkinter import *
 g_root                          = None
 g_workDuration                  = 30 * 60   # in seconds; change as needed
 g_relaxDuration                 = 5 * 60    # in seconds; change as needed
-g_notifyDurationBeforeRelax     = 20        # in seconds; change as needed
-g_minimizeDelay                 = 3         # in seconds; change as needed
+g_notifyDurationBeforeRelax     = 5         # in seconds; change as needed
+g_minimizeDelay                 = 2         # in seconds; change as needed
 gc_FONT                         = 'Helvetica'
 gc_DEFAULT_BG_COLOR             = '#DDDDDD'
 gc_DEFAULT_FG_COLOR             = 'black'
@@ -52,7 +52,7 @@ class Application(Frame):
         self.currentTimeLabel.pack()
         self.bottomFrame = Frame(master = self.master)
         self.bottomFrame.pack(expand = True, fill = X, anchor = S, side = BOTTOM)
-        self.actionButton = Button(self.bottomFrame, font = (gc_FONT, 20), command = lambda: self.switchMode(gc_MODE_RELAX), borderwidth = 0, padx = 10, pady = 10)
+        self.actionButton = Button(self.bottomFrame, font = (gc_FONT, 20), command = lambda: self.switchMode(gc_MODE_RELAX), borderwidth = 0, padx = 0, pady = 0)
         self.actionButton.pack(side = RIGHT, anchor = SE)
         self.copyLabel = Label(self.bottomFrame, font = (gc_FONT, 10), text = '© 2020-2022 <Harper LIU, {0}>'.format(gc_REPO_URL), cursor="hand2")
         self.copyLabel.pack(side = LEFT, anchor = SW)
