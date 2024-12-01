@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 This program reminds you to relax after working for a certain period.
 """
